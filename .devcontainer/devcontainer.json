@@ -11,15 +11,34 @@
   // "forwardPorts": [],
 
   // Uncomment the next line to run commands after the container is created.
-  // "postCreateCommand": "cat /etc/os-release",
+  "postCreateCommand": "bash /workspaces/.devcontainer/install-gradle.sh",
 
   // Configure tool-specific properties.
   "customizations": {
     "vscode": {
-      "settings": {},
+      "settings": {
+        "python.analysis.typeCheckingMode": "basic",
+        // suppress hover hints.
+        // "editor.parameterHints.enabled": false,
+        // "editor.hover.enabled": false,
+        "github.copilot.enable": {
+          "*": false
+        }
+      },
       "extensions": [
         "mhutchie.git-graph",
-        "streetsidesoftware.code-spell-checker"
+        "streetsidesoftware.code-spell-checker",
+        "jgclark.vscode-todo-highlight",
+        "ms-python.autopep8",
+        // "formulahendry.code-runner",
+        // "samuelcolvin.jinjahtml",
+        // ms-python.python install Pylance and Python Debugger
+        "ms-python.python",
+        // "kevinrose.vsc-python-indent",
+        "esbenp.prettier-vscode",
+        "shd101wyy.markdown-preview-enhanced",
+        "takumii.markdowntable",
+        "vscjava.vscode-java-pack"
       ]
     }
   }

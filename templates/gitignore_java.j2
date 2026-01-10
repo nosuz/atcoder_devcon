@@ -1,0 +1,26 @@
+# <<< gitignore:java >>>
+# =========================
+# Build / Gradle
+# =========================
+.gradle/
+build/
+out/
+bin/
+
+# =========================
+# Generated Java sources
+# （setup-java.py が自動生成）
+# =========================
+src/main/java/{{ content.contest }}/*.java
+src/test/java/{{ content.contest }}/*Test.java
+
+# =========================
+# Allow commit for solved problems
+# =========================
+# 解けた問題は、以下の行のコメント (#) を外してください
+#
+# --- Java ---
+{% for p in problems -%}
+# !src/main/java/{{ content.contest }}/{{ p }}.java
+# !src/test/java/{{ content.contest }}/{{ p }}Test.java
+{% endfor %}

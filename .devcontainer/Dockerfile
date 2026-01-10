@@ -35,12 +35,12 @@ RUN set -eux; \
     useradd --uid "${UID}" --gid "${GID}" -s /bin/bash -m "${USERNAME}"
 
 # Enable sudo
-# RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-#     --mount=type=cache,target=/var/lib/apt,sharing=locked \
-#     apt-get update \
-#     && apt-get install -y sudo \
-#     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
-#     && chmod 0440 /etc/sudoers.d/$USERNAME
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    apt-get update \
+    && apt-get install -y sudo \
+    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
+    && chmod 0440 /etc/sudoers.d/$USERNAME
 
 # https://github.com/moby/buildkit/issues/1662#issuecomment-683962222
 # https://docs.docker.com/reference/dockerfile/?__readwiseLocation=#example-cache-apt-packages
@@ -51,6 +51,13 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     # Basic tools
     # ssh is required to handle GitHub in the container
     git ssh \
+    # install python
+    python3 python3-dev python3-venv python-is-python3 \
+    # install java
+    default-jdk-headless \
+    # required to install sdkman and gradle
+    # Both zip and unzip are required to install.
+    curl unzip zip \
     # System tools
     locales tzdata \
     # Configure locale
@@ -62,3 +69,23 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 
 # Default user
 USER vscode
+
+# install library
+COPY requirements.txt .
+ARG PIP_CACHE_DIR=/home/vscode/.cache/pip
+RUN mkdir -p $PIP_CACHE_DIR
+RUN --mount=type=cache,target=/home/vscode/.cache/pip,sharing=locked  \
+    sudo chown vscode:vscode /home/vscode/.cache/pip \
+    && python3 -m venv $HOME/venv \
+    && $HOME/venv/bin/pip install --upgrade pip \
+    && $HOME/venv/bin/pip install -r requirements.txt
+
+# activate venv
+RUN cat <<'EOF' >> /home/vscode/.bashrc
+
+export LANG=$LANG
+
+if [ -f "$HOME/venv/bin/activate" ] && [ -z "$VIRTUAL_ENV" ]; then
+    . "$HOME/venv/bin/activate"
+fi
+EOF

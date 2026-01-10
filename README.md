@@ -1,35 +1,131 @@
-# Boilerplate for VSCode Dev Container
+# Dev Container for AtCoder
 
-VSCode の dev container を使用するための雛形です。
+このDev Containerは、[AtCoder Beginner Contest (ABC)](https://atcoder.jp/home)に参加するコード作成環境です。
 
-### pre-required packages
+- テンプレートからスケルトンコードを自動生成します。
+- Webページから各問題の入力例・出力例を取得してテストコードを自動作成します。
 
-```bash
-sudo apt install docker.io docker-buildx docker-compose-v2
+## Supporting Languages
+
+- Python
+- Java
+
+Javaのコードを提出する時には、スケルトンコードのままだとエラーになります。そのため次の修正が必要です。
+
+- package宣言を削除する。
+- クラス名をMainに修正する。
+
+この不便さは、次の[bookmarklet](bookmarklet.js)を使用すると解消されます。
+
+```javascript
+javascript:(async()=>{try{const[p]=await showOpenFilePicker({types:[{accept:{"text/plain":[".java"]}}],excludeAcceptAllOption:true});let c=await(await p.getFile()).text();c=c.replace(/^\s*package\s+.*;\s*$/m,"");if(!/public\s+class\s+Main\b/.test(c))c=c.replace(/public\s+class\s+[A-Za-z_]\w*\s*\{/m,"public class Main {");let ok=false;if(window.monaco?.editor?.getModels){let m=window.monaco.editor.getModels();if(m[0]){m[0].setValue(c);ok=true}}if(!ok&&window.ace?.edit){let e=document.querySelector(".ace_editor")||document.getElementById("editor");if(e){let ed=ace.edit(e);ed.setValue(c,-1);ed.clearSelection();ok=true}}let ta=document.querySelector('textarea[name="sourceCode"]');if(ta){ta.value=c;ta.dispatchEvent(new Event("input",{bubbles:true}));ta.dispatchEvent(new Event("change",{bubbles:true}));ok=true}if(!ok)return;window.scrollTo(0,document.documentElement.scrollHeight)}catch(e){}})();
 ```
 
-### add user
+### Bookmarkletの使用方法
+
+1. 問題のページまたは提出ページを開く。
+2. 提出するコードの言語を選択する。
+3. このbookmarkletを実行する。
+4. ファイル選択画面が表示されるので、提出するコードを選択する。
+5. 提出ボタンをクリックする。
+
+## Setup
+
+### ログイン
+
+コンテストに参加するためには、AtCoderのページにログインする必要があります。しかしロボット判定があるため、一般的なブラウザ以外ではログインできません。そこで、ログイン済みのブラウザーから必要な情報をコピーします。
+
+Chrome Browserでの例
+
+1. [Atcoder](https://atcoder.jp/)のページを開いて、ログインする。
+2. `F12`で開発者ツールを開く。
+3. 開発者ツールのメニューバーにあるApplicationを選ぶ。
+4. StorageのCookiesを選ぶ。
+5. `https://atcoder.jp`があるので、これをクリックする。
+6. `REVEL_SESSION`の値をコピーする。
+7. `cookies_sample.json`を開いて、REVEL_SESSIONの値をコピーした値で置き換える。
+8. `cookies_sample.json`を`cookies.json`として保存する。
+
+コンテスト時に入力・出力例を取得できなくなったときには、再度この操作が必要です。
+
+### 入力・出力例の取得とコード作成
+
+スケルトンコードとテストコードの作成には、`setup.py`を使用します。例えばABC439のコードを作成するには、次のコマンドを実行します。
 
 ```bash
-sudo usermod -aG docker $USER
+./setup.py abc439
 ```
 
-### clone boilerplate files
+このコマンドを実行すると、`default_lang.txt`で指定した言語用のスケルトンコードとテストコードが作成されます。オプションにより、作成する言語を指定することができます。
 
-1. このレポジトリを次のコマンドでクローンしてください。
+### Options
+
+- --python, --java: それぞれPythonとJava用のスケルトンコードとテストコードを作成します。
+
+### default_lang.txt
+
+`default_lang.txt`は、`setup.py`がオプションの指定なしに実行された時に作成する言語を指定します。
+
+- #から始まる行は、コメントとなる。
+- 言語は、各1行で指定する。
+
+## Testing Codes
+
+### Python
+
+Pythonのテスト環境は、[pytest](https://docs.pytest.org/en/stable/)を使う方法と、`validate.py`を使う方法があります。
+
+#### pytest
+
+`pytest`を使った入力・出力例でのテスト
 
 ```bash
-git clone https://github.com/nosuz/dev_container.git
-cd dev_container
-rm -r .git
-git init
-git -m main # if needed
+# A問題のテスト
+pytest tests/test_a.py
 
-code .
-# Edit .devcontainer/Dockerfile to install required APT packages before rebuilding this container.
+# 個別の入力例でテスト
+pytest tests/test_a.py -k sample1
+pytest tests/test_a.py -k sample2
+
 ```
 
-2. オプション：`.devcontainer/generate_env.sh`または`.devcontainer/generate_env.sh`を実行して USER ID を`.devcontainer/.env`に書き込んでおいてください。このオプションを実行することで、Python のライブラリーのようにユーザ権限でインストールされるファイルがある場合に、docker image の作成に必要な時間が短くなり、イメージのサイズが小さくなります。
+#### validate.py
+
+`validate.py`を使った入力・出力例でのテスト
+
+`validate.py`用の入力・出力例は、コードにコメントとして記載します。そのため自作の入力例を簡単にテストすることができます。
+
+```bash
+# A問題のテスト
+python ../validate.py A.py
+
+# 個別の入力例でテスト
+python ../validate.py A.py --limit 1
+python ../validate.py A.py --limit 1,2
+
+```
+
+### Java
+
+`JUnit`を使った入力・出力例でのテスト
+
+```bash
+# A問題のテスト
+gradle test --tests ATest
+
+# 個別の入力例でテスト
+gradle test --tests ATest.sample1
+gradle test --tests ATest.sample2
+
+```
+
+## Troubleshooting
+
+### ファイルを書き込めない
+
+Dev Containerを実行しているユーザIDとファイルオーナーのIDが一致していないと考えられます。
+
+IDを一致させるため、一度Dev Containerを終了させてください。その上で次のコマンドを実行して、再度Dev Containerを再作成してください。
 
 ```bash
 bash .devcontainer/generate_env.sh
@@ -37,34 +133,7 @@ bash .devcontainer/generate_env.sh
 python .devcontainer/generate_env.py
 ```
 
-3. 必要なパッケージをインストールするように Dockerfile を編集してください。
-4. このディレクトリを VSCode で開き、コマンドパレット(Ctrl + Shift + P)で Dev Containers: Rebuild container を実行すると、コンテナイメージが作成されて接続されます。
-
-### user name and id
-
-このコンテナは、コンテナを開いたユーザと同じ ID で実行されます。そのため権限の問題なしにディレクトリを共有できます。ただしコンテナ内のユーザ名は、`vscode`となり、`ls -l`で共有ディレクトリを見るとユーザ名が元と変わって`vscode`になります。
-
-また、`.devcontainer/devcontainer.json`の`remoteUser`で`root`を指定した場合には、root 権限で実行されます。
-
-## VSCode settings and extensions
-
-Dev container では、VSCode の設定と機能拡張がリセットされます。そこで、必要な設定と機能拡張を`.devcontainer/devcontainer.json`の`customizations`に記載します。
-
-```
-// devcontainer.json
-{
-  "customizations": {
-    "vscode": {
-      "settings": {},
-      "extensions": ["mhutchie.git-graph", "streetsidesoftware.code-spell-checker"]
-    }
-  }
-}
-```
-
-初期設定では、[Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker)と[Git Graph](https://marketplace.visualstudio.com/items?itemName=mhutchie.git-graph)がインストールされます。
-
-## Git
+### Git の編集にVSCodeを使用したい。
 
 editor が設定されていないため、コマンドラインから`git commit --amend`など編集が必要な操作ができません。そこで、`.git/config`に`editor`の設定を加えます。
 
@@ -74,24 +143,3 @@ editor が設定されていないため、コマンドラインから`git commi
 ```
 
 ローカルの`~/.gitconfig`に設定がある場合は、デフォルト設定ではこのファイルがコピーされるのでコンテナ毎の設定は不要です。
-
-### GitHub access
-
-GitHub は、`ssh`パッケージをインストールしてあれば他に特別な設定無く使用できると思います。次のコマンドで GitHub への接続を確認できます。
-
-```command
-$ ssh -T git@github.com
-Hi nosuz! You've successfully authenticated, but GitHub does not provide shell access.
-```
-
-## Docker Images
-
-古いイメージは、次のコマンドで一括削除できます。
-
-```bash
-for i in $(docker image ls | awk '$1 == "<none>" && $2 == "<none>" { print $3 }'); do echo $i; docker image rm $i; done
-```
-
-## 参考
-
-- [Docker や VSCode + Remote-Container のパーミッション問題に立ち向かう](https://zenn.dev/forrep/articles/8c0304ad420c8e)

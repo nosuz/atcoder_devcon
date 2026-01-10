@@ -1,0 +1,17 @@
+# <<< gitignore:python >>>
+# =========================
+# Generated Python sources
+# （setup-python.py が自動生成）
+# =========================
+*.py
+tests/
+# pytest.ini
+__pycache__/
+.pytest_cache/
+*.pyc
+
+# --- Python ---
+{% for p in problems -%}
+# !{{ p }}.py
+# !tests/test_{{ p | lower }}.py
+{% endfor %}
