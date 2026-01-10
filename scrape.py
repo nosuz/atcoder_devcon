@@ -3,6 +3,7 @@
 
 import os
 import json
+import time
 from datetime import datetime
 from bs4 import BeautifulSoup
 import requests
@@ -25,6 +26,8 @@ def download_html(url: str, cookies: dict[str, str] | None = None) -> str:
         )
     }
 
+    # make a break between requests
+    time.sleep(3)
     resp = requests.get(url, cookies=cookies, headers=headers, timeout=10)
     resp.raise_for_status()
 
