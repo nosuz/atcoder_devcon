@@ -9,8 +9,6 @@ from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader
 
-PROBLEMS = ["A", "B", "C", "D", "E", "F"]
-
 
 def load_cache(contest_dir: Path, problem: str) -> dict:
     path = contest_dir / "cache" / f"{problem}.json"
@@ -43,6 +41,7 @@ def escape_java_string(s: str) -> str:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("contest", help="e.g. abc438")
+    ap.add_argument("problems", help="e.g. A,B,C")
 
     # 手動指定もできるように残しつつ、デフォルトは自動検出
     ap.add_argument(
@@ -99,7 +98,7 @@ def main() -> None:
     test_dir.mkdir(parents=True, exist_ok=True)
 
     # A〜F を生成
-    for p in PROBLEMS:
+    for p in [q.upper() for q in args.problems.split(",")]:
         data = load_cache(contest_dir, p)
 
         # main

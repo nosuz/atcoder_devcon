@@ -7,8 +7,6 @@ from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader
 
-PROBLEMS = ["A", "B", "C", "D", "E", "F"]
-
 
 def load_cache(contest_dir: Path, problem: str) -> dict:
     path = contest_dir / "cache" / f"{problem}.json"
@@ -30,6 +28,7 @@ def strip_last_newline(s: str) -> str:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("contest", help="e.g. abc421")
+    ap.add_argument("problems", help="e.g. A,B,C")
     args = ap.parse_args()
 
     contest = args.contest.lower()
@@ -64,7 +63,7 @@ def main() -> None:
         "[pytest]\npython_files = test_*.py\naddopts = -q\n",
     )
 
-    for p in PROBLEMS:
+    for p in [q.upper() for q in args.problems.split(",")]:
         data = load_cache(contest_dir, p)
 
         # template_main.py は {{contents.title}} / {{contents.url}} を参照している :contentReference[oaicite:3]{index=3}

@@ -204,7 +204,7 @@ def ensure_gitignore_split(contest: str, languages: list[str]) -> None:
 def generate_java(contest: str):
     print("\n☕ Generating Java skeleton & JUnit tests")
     subprocess.check_call(
-        ["python3", "setup-java.py", contest]
+        ["python3", "setup-java.py", contest, ",".join(PROBLEMS)]
     )
     print("✅ Java generation finished")
 
@@ -212,7 +212,7 @@ def generate_java(contest: str):
 def generate_python(contest: str):
     print("\n🐍 Generating Python skeleton")
     subprocess.check_call(
-        ["python3", "setup-python.py", contest]
+        ["python3", "setup-python.py", contest, ",".join(PROBLEMS)]
     )
     print("✅ Python generation finished")
 
