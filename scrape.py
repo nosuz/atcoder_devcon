@@ -65,8 +65,8 @@ def extract_examples_from_html(html: str):
 
                 if h3_out and "出力例" in h3_out.text and pre_out:
                     examples.append({
-                        "input": pre_in.text.rstrip() + "\n",
-                        "output": pre_out.text.rstrip() + "\n"
+                        "input": pre_in.text.replace("\r", ""),
+                        "output": pre_out.text.replace("\r", "")
                     })
                     i += 2
                     continue
