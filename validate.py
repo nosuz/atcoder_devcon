@@ -30,7 +30,7 @@ def run_prog_with_data(prog_name, data, debug=False):
 
         try:
             input_data, expected_answer = block.split("<expected>")
-            expected_answer = expected_answer.lstrip()
+            expected_answer = expected_answer.strip().replace('\n', ' ')
         except ValueError:
             input_data = block
             expected_answer = None
