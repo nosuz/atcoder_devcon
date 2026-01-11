@@ -3,6 +3,7 @@
 
 import argparse
 import os
+import re
 import json
 import subprocess
 from pathlib import Path
@@ -249,6 +250,7 @@ def main():
     )
     parser.add_argument(
         "contest",
+        nargs="?",
         help="contest id (e.g. abc421)"
     )
     parser.add_argument(
@@ -261,8 +263,39 @@ def main():
         action="store_true",
         help="generate Python code (future)"
     )
+    parser.add_argument(
+        "--login",
+        action="store_true",
+        help="download https://atcoder.jp/ HTML as web.html and exit"
+    )
 
     args = parser.parse_args()
+
+    # --login が指定された場合は他のオプションを無視して終了
+    if args.login:
+        url = "https://atcoder.jp/"
+        cookies = load_cookies()
+
+        print(f"🌐 fetching: {url}")
+        html = download_html(url, cookies=cookies, wait=0)
+
+        # userScreenName を抽出
+        m = re.search(
+            r'var\s+userScreenName\s*=\s*"([^"]*)"\s*;',
+            html
+        )
+        user = m.group(1) if m else ""
+
+        if user:
+            print(f"👤 Screen Name: {user}")
+        else:
+            print("⚠️  Not logged in (login required)")
+
+        return
+
+    # 通常モードでは contest 必須
+    if not args.contest:
+        parser.error("contest is required unless --login is specified")
     contest = args.contest.lower()
 
     # 生成する言語を決定
