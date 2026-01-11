@@ -13,7 +13,7 @@ import requests
 # -----------------------------
 
 
-def download_html(url: str, cookies: dict[str, str] | None = None) -> str:
+def download_html(url: str, cookies: dict[str, str] | None = None, wait: int = 3) -> str:
     """
     Cookie を使って Web ページをダウンロードする
     """
@@ -27,7 +27,7 @@ def download_html(url: str, cookies: dict[str, str] | None = None) -> str:
     }
 
     # make a break between requests
-    time.sleep(3)
+    time.sleep(wait)
     resp = requests.get(url, cookies=cookies, headers=headers, timeout=10)
     resp.raise_for_status()
 

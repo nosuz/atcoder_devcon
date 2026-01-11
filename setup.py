@@ -62,7 +62,7 @@ def scrape_contest(contest: str):
     else:
         url = contest_url(contest)
         print(f"🌐 fetching contest page: {url}")
-        html = download_html(url, cookies=cookies)
+        html = download_html(url, cookies=cookies, wait=0)
         meta = extract_contest_meta_from_html(html)
         save_contest_cache(out_dir, url, meta)
         cmeta = {"url": url, **meta}
