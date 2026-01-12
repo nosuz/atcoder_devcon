@@ -4,6 +4,7 @@
 
 - テンプレートからスケルトンコードを自動生成します。
 - Webページから各問題の入力例・出力例を取得してテストコードを自動作成します。
+- Chromeの拡張機能`atcoder-paster`を使用すると、Javaのソースコードから`package`宣言を削除して、クラス名を`Main`に置換してコードを提出欄に貼り付けます。
 
 ## Supporting Languages
 
@@ -15,13 +16,33 @@ Javaのコードを提出する時には、スケルトンコードのままだ�
 - package宣言を削除する。
 - クラス名をMainに修正する。
 
-この不便さは、次の[bookmarklet](bookmarklet.js)を使用すると解消されます。
+この不便さは、次のChrome拡張機能または[bookmarklet](bookmarklet.js)を使用すると解消されます。
+
+### Chrome拡張機能
+
+ブックマークレットの代わりにChrome拡張機能を使用することもできます。
+
+#### 拡張機能のインストール方法
+
+1. 拡張機能から、拡張機能の管理を開く。
+2. ディベロッパーモードを有効にする。
+3. 「パケージ化されていない拡張機能を読み込む」をクリックして、`atcode-paster`ディレクトリを選択する。
+4. 「すべての拡張機能」に表示されるので、拡張機能を有効にする。
+
+#### 拡張機能の使用方法
+
+1. AtCoderの各問題または提出ページに移動する。
+2. 拡張機能のリストから`atcoder-paster`を選択する。ピン止めしておくと便利。
+3. 「.javaを選んで貼り付け」ボタンが表示されるので、クリックする。
+4. 貼り付けるファイルを選択する。
+
+### Bookmarklet
 
 ```javascript
 javascript:(async()=>{try{const[p]=await showOpenFilePicker({types:[{accept:{"text/plain":[".java"]}}],excludeAcceptAllOption:true});let c=await(await p.getFile()).text();c=c.replace(/^\s*package\s+.*;\s*$/m,"");if(!/public\s+class\s+Main\b/.test(c))c=c.replace(/public\s+class\s+[A-Za-z_]\w*\s*\{/m,"public class Main {");let ok=false;if(window.monaco?.editor?.getModels){let m=window.monaco.editor.getModels();if(m[0]){m[0].setValue(c);ok=true}}if(!ok&&window.ace?.edit){let e=document.querySelector(".ace_editor")||document.getElementById("editor");if(e){let ed=ace.edit(e);ed.setValue(c,-1);ed.clearSelection();ok=true}}let ta=document.querySelector('textarea[name="sourceCode"]');if(ta){ta.value=c;ta.dispatchEvent(new Event("input",{bubbles:true}));ta.dispatchEvent(new Event("change",{bubbles:true}));ok=true}if(!ok)return;window.scrollTo(0,document.documentElement.scrollHeight)}catch(e){}})();
 ```
 
-### Bookmarkletの使用方法
+#### Bookmarkletの使用方法
 
 1. 問題のページまたは提出ページを開く。
 2. 提出するコードの言語を選択する。
