@@ -6,6 +6,30 @@
 - Webページから各問題の入力例・出力例を取得してテストコードを自動作成します。
 - Chromeの拡張機能`atcoder-paster`を使用すると、Javaのソースコードから`package`宣言を削除して、クラス名を`Main`に置換してコードを提出欄に貼り付けます。
 
+## Dev Container
+
+コンテナを作成する手順は、次のとおりです。
+
+1. このレポジトリをクローンする。
+2. UID と GID を確認する。
+
+もしローカルの UID と GID が次の表と異なる場合は、次のいずれかのコマンドを実行してローカルの ID がコンテナに反映されるように設定してください。この操作がないと、docker image の作成に時間がかかり、作成された image のサイズも大きくなります。
+
+|     | ID   |
+| --- | ---- |
+| UID | 1000 |
+| GID | 1000 |
+
+1. VSCode で開き、コマンドパレットから`Dev Containers: Rebuild Container`を実行する。
+
+```bash
+bash .devcontainer/generate_env.sh
+# or
+python .devcontainer/generate_env.py
+```
+
+以上で、プログラミング環境の他、問題の入出力例を取得するプログラムが使えるようになります。
+
 ## Supporting Languages
 
 - Python
@@ -164,7 +188,7 @@ bash .devcontainer/generate_env.sh
 python .devcontainer/generate_env.py
 ```
 
-### Git の編集にVSCodeを使用したい。
+### Git の編集にVSCodeを使用したい
 
 editor が設定されていないため、コマンドラインから`git commit --amend`など編集が必要な操作ができません。そこで、`.git/config`に`editor`の設定を加えます。
 
