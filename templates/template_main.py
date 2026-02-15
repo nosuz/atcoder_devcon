@@ -31,3 +31,5 @@ A, B = map(int, input().split())
 N, M = map(int, input().split())
 
 A = list(map(int, input().split()))
+# 配列のpointerに便利
+A = list(map(lambda x: int(x) - 1, input().split()))
