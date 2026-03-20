@@ -1,7 +1,8 @@
 {
-  "name": "DevContainer",
+  "name": "AtCoder",
   "workspaceFolder": "/workspaces",
-  // UID and GID is imported from .env file.
+  "remoteUser": "ubuntu",
+  "updateRemoteUserUID": true,
   "dockerComposeFile": "compose.yaml",
   "service": "app",
   // Features to add to the dev container. More info: https://containers.dev/features.
@@ -17,7 +18,7 @@
   "customizations": {
     "vscode": {
       "settings": {
-        "python.defaultInterpreterPath": "/home/vscode/venv/bin/python",
+        "python.defaultInterpreterPath": "/opt/venv/bin/python",
         "python.analysis.typeCheckingMode": "basic",
         // suppress hover hints.
         // "editor.parameterHints.enabled": false,
