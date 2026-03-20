@@ -18,7 +18,7 @@ fi
 export SDKMAN_DIR="$HOME/.sdkman"
 curl -s "https://get.sdkman.io" | bash
 source "$SDKMAN_DIR/bin/sdkman-init.sh"
-sdk install gradle 8.7
+sdk install gradle
 
 # 初期化完了を示すマーカーファイルを作成
 touch "$MARKER_FILE"
