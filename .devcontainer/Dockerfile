@@ -8,22 +8,22 @@ ENV LC_ALL=ja_JP.UTF-8
 ENV LC_CTYPE=ja_JP.UTF-8
 ENV TZ=Asia/Tokyo
 
-# ARG USERNAME=ubuntu
-# ARG UID=$UID
-# ARG GID=$GID
+ARG USERNAME=ubuntu
+ARG UID=$UID
+ARG GID=$GID
 
-# # Remove user if already exist and create new user.
-# RUN set -eux; \
-#     if getent passwd "${UID}" > /dev/null; then \
-#     echo "UID ${UID} already exists. Deleting..."; \
-#     userdel -f $(getent passwd "${UID}" | cut -d: -f1) || true; \
-#     fi; \
-#     if getent group "${GID}" > /dev/null; then \
-#     echo "GID ${GID} already exists. Deleting..."; \
-#     groupdel $(getent group "${GID}" | cut -d: -f1) || true; \
-#     fi; \
-#     groupadd --gid "${GID}" "${USERNAME}"; \
-#     useradd --uid "${UID}" --gid "${GID}" -s /bin/bash -m "${USERNAME}"
+# Remove user if already exist and create new user.
+RUN set -eux; \
+    if getent passwd "${UID}" > /dev/null; then \
+    echo "UID ${UID} already exists. Deleting..."; \
+    userdel -f $(getent passwd "${UID}" | cut -d: -f1) || true; \
+    fi; \
+    if getent group "${GID}" > /dev/null; then \
+    echo "GID ${GID} already exists. Deleting..."; \
+    groupdel $(getent group "${GID}" | cut -d: -f1) || true; \
+    fi; \
+    groupadd --gid "${GID}" "${USERNAME}"; \
+    useradd --uid "${UID}" --gid "${GID}" -s /bin/bash -m "${USERNAME}"
 
 # install packages
 ENV DEBIAN_FRONTEND=noninteractive

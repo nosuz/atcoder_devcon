@@ -11,22 +11,17 @@
 コンテナを作成する手順は、次のとおりです。
 
 1. このレポジトリをクローンする。
-2. UID と GID を確認する。
-
-もしローカルの UID と GID が次の表と異なる場合は、次のいずれかのコマンドを実行してローカルの ID がコンテナに反映されるように設定してください。この操作がないと、docker image の作成に時間がかかり、作成された image のサイズも大きくなります。
+2. 自身の`UID`と`GIG` が次の表と同じか確認する。
+3. VSCode で開き、コマンドパレットから`Dev Containers: Rebuild Container`を実行する。
 
 |     | ID   |
 | --- | ---- |
 | UID | 1000 |
 | GID | 1000 |
 
-1. VSCode で開き、コマンドパレットから`Dev Containers: Rebuild Container`を実行する。
+### `UID`と`GIG`が表と異なる場合
 
-```bash
-bash .devcontainer/generate_env.sh
-# or
-python .devcontainer/generate_env.py
-```
+もしローカルの `UID`と`GIG`が次の表と異なる場合は、`.devcontainer/.env`を編集して、自身の`UID`と`GIG`を設定します。その上で、`step 3`を実行します。
 
 以上で、プログラミング環境の他、問題の入出力例を取得するプログラムが使えるようになります。
 
