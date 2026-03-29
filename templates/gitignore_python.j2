@@ -1,17 +1,16 @@
-# <<< gitignore:python >>>
+# gitignore:python
 # =========================
 # Generated Python sources
 # （setup-python.py が自動生成）
 # =========================
-*.py
-tests/*.py
 # pytest.ini
 __pycache__/
 .pytest_cache/
 *.pyc
 
 # --- Python ---
+# 解けなかった問題は、以下の行のコメント (#) を外してください
 {% for p in problems -%}
-# !{{ p }}.py
-# !tests/test_{{ p | lower }}.py
+#{{ p }}.py
+# tests/test_{{ p | lower }}.py
 {% endfor %}
