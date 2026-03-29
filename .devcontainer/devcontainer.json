@@ -20,6 +20,14 @@
       "settings": {
         "python.defaultInterpreterPath": "/opt/venv/bin/python",
         "python.analysis.typeCheckingMode": "basic",
+        // "[python]": {
+        //   "editor.defaultFormatter": "ms-python.autopep8",
+        //   "editor.formatOnSave": true
+        // },
+        "[python]": {
+          "editor.defaultFormatter": "ms-python.black-formatter",
+          "editor.formatOnSave": true
+        },
         // suppress hover hints.
         // "editor.parameterHints.enabled": false,
         // "editor.hover.enabled": false,
@@ -31,7 +39,8 @@
         "mhutchie.git-graph",
         "streetsidesoftware.code-spell-checker",
         "jgclark.vscode-todo-highlight",
-        "ms-python.autopep8",
+        // "ms-python.autopep8",
+        "ms-python.black-formatter",
         // "formulahendry.code-runner",
         // "samuelcolvin.jinjahtml",
         // ms-python.python install Pylance and Python Debugger
