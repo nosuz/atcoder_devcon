@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "AtCoder Java Paster",
-  "version": "0.2.0",
-  "description": "Pick a .java file and paste into AtCoder submit editor (submit page only).",
+  "version": "0.4.0",
+  "description": "Pick a contest code file and paste into AtCoder submit editor (submit page only).",
   "action": {
     "default_popup": "popup.html"
   },

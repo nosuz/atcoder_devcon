@@ -18,6 +18,8 @@
 import os
 
 
+# remove or comment out `debug()` before upload.
+# the cost is not negligible
 def debug(*args):
     if os.environ.get("DEBUG") in ("1", "true", "True", "yes"):
         print(*args)

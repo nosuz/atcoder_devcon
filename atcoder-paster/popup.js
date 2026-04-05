@@ -24,7 +24,14 @@ document.getElementById("paste").addEventListener("click", async () => {
     world: "MAIN",
     func: async () => {
       const pickerOpts = {
-        types: [{ description: "Programs", accept: { "text/plain": [".java"] } }],
+        types: [
+          {
+            description: "Programs",
+            accept: {
+              "text/plain": [".java", ".py"],
+            },
+          },
+        ],
         excludeAcceptAllOption: true,
         multiple: false,
       };
@@ -36,6 +43,53 @@ document.getElementById("paste").addEventListener("click", async () => {
             /public\s+class\s+[A-Za-z_]\w*\s*\{/m,
             "public class Main {"
           );
+        }
+        return src;
+      };
+
+      const normalizePython = (src) => {
+        const lines = src.split(/\r?\n/);
+        const out = [];
+
+        for (const line of lines) {
+          const indent = line.match(/^\s*/)?.[0] ?? "";
+          const trimmed = line.trim();
+
+          // debug(...) 単体行 → コメントアウト
+          if (/^debug\s*\(.*\)\s*$/.test(trimmed)) {
+            out.push(`${indent}# ${trimmed}`);
+            continue;
+          }
+
+          // debug(...) + コメント → コメントアウト
+          if (/^debug\s*\(.*\)\s*#.*$/.test(trimmed)) {
+            out.push(`${indent}# ${trimmed}`);
+            continue;
+          }
+
+          // if ...: debug(...) → pass + コメント
+          const inlineIf = line.match(/^(\s*if\b.*:\s*)debug\s*\((.*)\)\s*(#.*)?$/);
+          if (inlineIf) {
+            const condition = inlineIf[1];
+            const args = inlineIf[2];
+            const comment = inlineIf[3] ? ` ${inlineIf[3]}` : "";
+            out.push(`${condition}pass # debug(${args})${comment}`);
+            continue;
+          }
+
+          out.push(line);
+        }
+
+        return out.join("\n");
+      };
+
+      const normalizeCode = (src, filename) => {
+        const lower = (filename || "").toLowerCase();
+        if (lower.endsWith(".java")) {
+          return normalizeJava(src);
+        }
+        if (lower.endsWith(".py")) {
+          return normalizePython(src);
         }
         return src;
       };
@@ -78,7 +132,7 @@ document.getElementById("paste").addEventListener("click", async () => {
       const [handle] = await showOpenFilePicker(pickerOpts);
       const file = await handle.getFile();
       const content = await file.text();
-      const code = normalizeJava(content);
+      const code = normalizeCode(content, file.name);
 
       let ok = setToEditor(code);
       if (ta) {
