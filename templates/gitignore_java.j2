@@ -1,4 +1,4 @@
-# gitignore:java
+# <<< gitignore:java >>>
 # =========================
 # Build / Gradle
 # =========================
@@ -11,14 +11,16 @@ bin/
 # Generated Java sources
 # （setup-java.py が自動生成）
 # =========================
+src/main/java/{{ content.contest }}/*.java
+src/test/java/{{ content.contest }}/*Test.java
 
 # =========================
-# Ignore unsolved problems
+# Allow commit for solved problems
 # =========================
-# 解けなかった問題は、以下の行のコメント (#) を外してください
+# 解けた問題は、以下の行のコメント (#) を外してください
 #
 # --- Java ---
 {% for p in problems -%}
-# src/main/java/{{ content.contest }}/{{ p }}.java
-# src/test/java/{{ content.contest }}/{{ p }}Test.java
+# !src/main/java/{{ content.contest }}/{{ p }}.java
+# !src/test/java/{{ content.contest }}/{{ p }}Test.java
 {% endfor %}
